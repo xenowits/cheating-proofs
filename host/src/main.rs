@@ -9,7 +9,7 @@ fn main() {
     let receipt_filename = String::from("receipt");
 
     match create_receipt(receipt_filename.clone(), suspected_contacts, call_history) {
-        Ok(receipt) => println!("Receipt created successfully!"),
+        Ok(_) => println!("Receipt created successfully!"),
         Err(e) => panic!("Error creating receipt: {}", e),
     }
 
@@ -25,6 +25,7 @@ fn main() {
     };
 }
 
+// create_receipt creates a zk-receipt of cheating proof and saves the receipt to the provided file.
 pub fn create_receipt(receipt_filename: String, suspected_contacts: Vec<String>, call_history: Vec<String>) -> Result<Receipt, Error> {
     // First, we construct an executor environment
     let env = ExecutorEnv::builder()
@@ -65,7 +66,7 @@ pub fn verify_receipt(receipt_file: String) -> Result<bool, Error> {
     // Verify receipt.
     decoded.verify(MULTIPLY_ID).unwrap();
 
-    let cheating: bool = from_slice(&decoded.journal)?;
+    let cheating: bool = from_slice(&decoded.journal).unwrap();
 
     return Ok(cheating);
 }
