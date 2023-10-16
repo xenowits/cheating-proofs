@@ -46,5 +46,24 @@ fn cheating(suspected_contacts: Vec<String>, call_history: Vec<String>) -> bool 
         }
     }
 
-    return true;
+    return false;
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::cheating;
+
+    #[test]
+    fn is_cheating() {
+        let suspected_contacts = vec![String::from("1")];
+        let call_history = vec![String::from("1"), String::from("2")];
+        assert_eq!(cheating(suspected_contacts, call_history), true);
+    }
+
+    #[test]
+    fn is_not_cheating() {
+        let suspected_contacts = vec![String::from("1")];
+        let call_history = vec![String::from("2"), String::from("3")];
+        assert_eq!(cheating(suspected_contacts, call_history), false);
+    }
 }

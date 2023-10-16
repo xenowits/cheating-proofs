@@ -5,7 +5,7 @@ use risc0_zkvm::{default_prover, ExecutorEnv, Receipt, serde::{to_vec}};
 
 fn main() {
     let suspected_contacts = vec![String::from("1")];
-    let call_history = vec![String::from("1"), String::from("2")];
+    let call_history = vec![String::from("2"), String::from("3")];
     let receipt_filename = String::from("receipt");
 
     match create_receipt(receipt_filename.clone(), suspected_contacts, call_history) {
