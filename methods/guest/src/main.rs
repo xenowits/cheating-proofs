@@ -1,25 +1,50 @@
 #![no_main]
 // If you want to try std support, also update the guest Cargo.toml file
-#![no_std]  // std support is experimental
+// #![no_std]  // std support is experimental
 
+extern crate alloc;
 
+use alloc::string::String;
+use alloc::vec::Vec;
 use risc0_zkvm::guest::env;
+use std::{collections::HashMap, println};
 
 risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
-     // Load the first number from the host
-    let a: u64 = env::read();
-    // Load the second number from the host
-    let b: u64 = env::read();
+    // Load the suspected contacts from the host
+    let suspected_contacts: Vec<String> = env::read();
+    let call_history: Vec<String> = env::read();
 
-    // Verify that neither of them are 1 (i.e. nontrivial factors)
-    if a == 1 || b == 1 {
-        panic!("Trivial factors")
+    if suspected_contacts.len() == 0 {
+        panic!("no suspected contacts")
+    } else if call_history.len() == 0 {
+        panic!("no call history")
     }
 
-    // Compute the product while being careful with integer overflow
-    let product = a.checked_mul(b).expect("Integer overflow");
+    let is_cheating = cheating(suspected_contacts, call_history);
 
-    env::commit(&product);
+    env::commit(&is_cheating);
+}
+
+/// cheating returns true if call history contains any suspected contact.
+fn cheating(suspected_contacts: Vec<String>, call_history: Vec<String>) -> bool {
+    let mut hashes = HashMap::new();
+
+    for contact in suspected_contacts {
+        hashes.insert(contact, true);
+    }
+
+    for contact in call_history {
+        match hashes.get(&contact) {
+            Some(x) => {
+                println!("Found a suspected contact in call history: {}", x);
+                
+                return true;
+            }
+            _ => {}
+        }
+    }
+
+    return true;
 }
