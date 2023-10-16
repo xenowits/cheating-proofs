@@ -9,9 +9,9 @@ fn main() {
     match verify_receipt(receipt_filename) {
         Ok(cheating) => {
             if cheating {
-                println!("Your boyfriend IS cheating.")
+                println!("Your boyfriend IS cheating 😟")
             } else {
-                println!("Your boyfriend is NOT cheating.")
+                println!("Your boyfriend is NOT cheating 😀")
             }
         },
         Err(e) => panic!("verify receipt: {}", e),
