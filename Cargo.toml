@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "host",
+    "verifier",
     "methods/guest",
 ]
 

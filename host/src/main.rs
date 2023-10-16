@@ -1,7 +1,7 @@
 use std::fs::OpenOptions;
-use std::io::{Error, Read, Write};
-use hello_xenowits_methods::{MULTIPLY_ELF, MULTIPLY_ID};
-use risc0_zkvm::{default_prover, ExecutorEnv, Receipt, serde::{to_vec, from_slice}};
+use std::io::{Error, Write};
+use hello_xenowits_methods::{MULTIPLY_ELF};
+use risc0_zkvm::{default_prover, ExecutorEnv, Receipt, serde::{to_vec}};
 
 fn main() {
     let suspected_contacts = vec![String::from("1")];
@@ -12,17 +12,6 @@ fn main() {
         Ok(_) => println!("Receipt created successfully!"),
         Err(e) => panic!("Error creating receipt: {}", e),
     }
-
-    match verify_receipt(receipt_filename) {
-        Ok(cheating) => {
-            if cheating {
-                println!("Your boyfriend IS cheating.")
-            } else {
-                println!("Your boyfriend is NOT cheating.")
-            }
-        },
-        Err(e) => panic!("verify receipt: {}", e),
-    };
 }
 
 // create_receipt creates a zk-receipt of cheating proof and saves the receipt to the provided file.
@@ -51,22 +40,4 @@ pub fn create_receipt(receipt_filename: String, suspected_contacts: Vec<String>,
     println!("Len of serialized receipt: {}", serialized_receipt.len());
 
     return Ok(receipt);
-}
-
-// verify_receipt loads a receipt from the provided file and verifies the receipt.
-pub fn verify_receipt(receipt_file: String) -> Result<bool, Error> {
-    // Read the bytes from file.
-    let mut receipt_file = OpenOptions::new().read(true).open(receipt_file)?;
-    let mut read_bytes = vec![];
-    receipt_file.read_to_end(&mut read_bytes)?;
-
-    // Deserialize receipt.
-    let decoded: Receipt = bincode::deserialize(&read_bytes[..]).unwrap();
-
-    // Verify receipt.
-    decoded.verify(MULTIPLY_ID).unwrap();
-
-    let cheating: bool = from_slice(&decoded.journal).unwrap();
-
-    return Ok(cheating);
 }
